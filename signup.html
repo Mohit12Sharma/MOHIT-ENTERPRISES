@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohit Enterprises - Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-letter">M</span>
+                <span class="logo-letter">o</span>
+                <span class="logo-letter">h</span>
+                <span class="logo-letter">i</span>
+                <span class="logo-letter">t</span>
+                <span class="logo-letter" style="margin-right: 5px;"> </span>
+                <span class="logo-letter">E</span>
+                <span class="logo-letter">n</span>
+                <span class="logo-letter">t</span>
+                <span class="logo-letter">e</span>
+                <span class="logo-letter">r</span>
+                <span class="logo-letter">p</span>
+                <span class="logo-letter">r</span>
+                <span class="logo-letter">i</span>
+                <span class="logo-letter">s</span>
+                <span class="logo-letter">e</span>
+                <span class="logo-letter">s</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html" class="active">Sign Up</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>Join Us</h1>
+        <p>Become Part of the Mohit Enterprises Family</p>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div class="page-content">
+        <div class="form-container">
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number">
+                </div>
+
+                <div class="form-group">
+                    <label for="company">Company Name (Optional)</label>
+                    <input type="text" id="company" name="company" placeholder="Enter your company name">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="agree" required> I agree to the Terms and Conditions
+                    </label>
+                </div>
+
+                <button type="submit" class="form-btn">Create Account</button>
+
+                <p style="text-align: center; margin-top: 20px; color: #666;">
+                    Already have an account? <a href="login.html" style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Mohit Enterprises. All rights reserved.</p>
+            <p>Contact us: mohitenterprises1207@gmail.com | Phone: +91-XXXX-XXXX-XX</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const company = document.getElementById('company').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const agree = document.querySelector('input[name="agree"]:checked');
+
+            if (!fullname || !email || !phone || !password || !confirmPassword) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+
+            if (!validatePhone(phone)) {
+                showAlert('Please enter a valid phone number', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            if (!agree) {
+                showAlert('Please agree to the Terms and Conditions', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters long', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fullname,
+                        email,
+                        phone,
+                        company,
+                        password,
+                        confirmPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Account created successfully! Redirecting to login...', 'success');
+                    
+                    // Show professional welcome modal
+                    const welcomeModal = document.createElement('div');
+                    welcomeModal.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(0, 0, 0, 0.7);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 2000;
+                        backdrop-filter: blur(2px);
+                        animation: fadeIn 0.5s ease;
+                    `;
+                    
+                    welcomeModal.innerHTML = `
+                        <div style="
+                            background: white;
+                            padding: 60px 50px;
+                            border-radius: 15px;
+                            text-align: center;
+                            max-width: 500px;
+                            box-shadow: 0 10px 40px rgba(192, 57, 43, 0.3);
+                            animation: popupBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                            border: 2px solid var(--secondary-color);
+                        ">
+                            <h2 style="
+                                color: #666;
+                                margin-bottom: 15px;
+                                font-weight: 300;
+                                animation: fadeInDown 0.6s ease;
+                            ">Welcome!</h2>
+                            <h1 style="
+                                font-size: 2.5rem;
+                                color: var(--primary-color);
+                                margin-bottom: 25px;
+                                text-transform: uppercase;
+                                letter-spacing: 2px;
+                                animation: titleGlow 2s ease-in-out infinite;
+                                text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+                            ">You're Now Part of<br>Mohit Enterprises Family</h1>
+                            <p style="
+                                font-size: 1.1rem;
+                                color: #888;
+                                margin-bottom: 35px;
+                                font-style: italic;
+                                animation: fadeInUp 0.7s ease 0.2s both;
+                            ">We're excited to have you join us. Together, we'll achieve excellence and innovation.</p>
+                            <button onclick="this.parentElement.parentElement.remove(); window.location.href = 'login.html';" style="
+                                background-color: var(--secondary-color);
+                                color: white;
+                                padding: 13px 35px;
+                                font-size: 1rem;
+                                border: none;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-weight: 600;
+                                text-transform: uppercase;
+                                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                                animation: buttonPop 0.8s ease 0.4s both;
+                                transition: all 0.3s ease;
+                            " onmouseover="this.style.backgroundColor='var(--accent-color)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 20px rgba(231, 76, 60, 0.5)';" 
+                            onmouseout="this.style.backgroundColor='var(--secondary-color)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(231, 76, 60, 0.3)';">
+                                Proceed to Login
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.body.appendChild(welcomeModal);
+                    localStorage.setItem('token', data.token);
+                } else {
+                    showAlert(data.message || 'Sign up failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
