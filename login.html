@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohit Enterprises - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-letter">M</span>
+                <span class="logo-letter">o</span>
+                <span class="logo-letter">h</span>
+                <span class="logo-letter">i</span>
+                <span class="logo-letter">t</span>
+                <span class="logo-letter" style="margin-right: 5px;"> </span>
+                <span class="logo-letter">E</span>
+                <span class="logo-letter">n</span>
+                <span class="logo-letter">t</span>
+                <span class="logo-letter">e</span>
+                <span class="logo-letter">r</span>
+                <span class="logo-letter">p</span>
+                <span class="logo-letter">r</span>
+                <span class="logo-letter">i</span>
+                <span class="logo-letter">s</span>
+                <span class="logo-letter">e</span>
+                <span class="logo-letter">s</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="login.html" class="active">Login</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>Login</h1>
+        <p>Access Your Account</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="page-content">
+        <div class="form-container">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="remember"> Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="form-btn">Login</button>
+
+                <p style="text-align: center; margin-top: 20px; color: #666;">
+                    Don't have an account? <a href="signup.html" style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">Sign Up</a>
+                </p>
+
+                <p style="text-align: center; margin-top: 10px; color: #666;">
+                    <a href="contact.html" style="color: var(--secondary-color); text-decoration: none;">Forgot Password?</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Mohit Enterprises. All rights reserved.</p>
+            <p>Contact us: mohitenterprises1207@gmail.com | Phone: +91-XXXX-XXXX-XX</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Login successful! Redirecting to home...', 'success');
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'error');
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
